@@ -170,6 +170,7 @@ const createMessage = (
   link?: { label: string; href: string },
   media?: ChatMedia,
   contacts?: ChatContact,
+  images?: string[],
 ): ChatMessageType => ({
   id: `${role}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
   role,
@@ -179,6 +180,7 @@ const createMessage = (
   link,
   media,
   contacts,
+  images,
 });
 
 const summarizeProduct = (description: string, size: string) => {
@@ -209,6 +211,13 @@ const buildSpecOptions = (): ChatMessageOption[] =>
     id: product.id,
     label: product.name,
     value: `${product.name} specs`,
+  }));
+
+const buildImageOptions = (): ChatMessageOption[] =>
+  products.map((product) => ({
+    id: `${product.id}-images`,
+    label: product.name,
+    value: `${product.name} images`,
   }));
 
 const findProductForSpecs = (input: string) => {
@@ -267,11 +276,25 @@ const isSoftwareQuery = (input: string) => {
   );
 };
 
+const isImageQuery = (input: string) => {
+  const normalized = input.trim().toLowerCase();
+  return (
+    normalized.includes("image") ||
+    normalized.includes("images") ||
+    normalized.includes("photo") ||
+    normalized.includes("photos") ||
+    normalized.includes("picture") ||
+    normalized.includes("pictures") ||
+    normalized.includes("gallery")
+  );
+};
+
 const isAboutQuery = (input: string) => input.trim().toLowerCase().includes("about");
 
 const getMockResponse = (input: string): ChatMessageType[] => {
   const normalized = input.trim().toLowerCase();
   const isSoftwareRequest = isSoftwareQuery(normalized);
+  const wantsImages = isImageQuery(normalized);
 
   if (isSoftwareRequest) {
     return [
@@ -282,6 +305,31 @@ const getMockResponse = (input: string): ChatMessageType[] => {
         undefined,
         undefined,
         SW_MEDIA,
+      ),
+    ];
+  }
+
+  if (wantsImages) {
+    const product = findProductMention(normalized);
+    if (product) {
+      return [
+        createMessage(
+          "bot",
+          `Here are the ${product.name} images:`,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          product.gallery ?? [],
+        ),
+      ];
+    }
+    return [
+      createMessage(
+        "bot",
+        "Which product images would you like to see?",
+        buildImageOptions(),
       ),
     ];
   }
@@ -421,12 +469,13 @@ export default function ChatWidget() {
 
   const showQuickReplies = useMemo(() => messages.length > 0, [messages]);
 
-  const handleSend = (text: string) => {
+const handleSend = (text: string) => {
     if (!text.trim() || isTyping) return;
 
     setMessages((prev) => [...prev, createMessage("user", text)]);
 
     const specProduct = findProductForSpecs(text);
+    const wantsImages = isImageQuery(text);
     const wantsSoftware = isSoftwareQuery(text);
     const wantsAboutVideos = isAboutQuery(text);
     const mentionedProduct = findProductMention(text);
@@ -442,7 +491,7 @@ export default function ChatWidget() {
       }, 350);
     }
 
-    if (mentionedProduct && !specProduct) {
+    if (mentionedProduct && !specProduct && !wantsImages) {
       setTimeout(() => {
         window.dispatchEvent(
           new CustomEvent("crystal-open-details", {

@@ -287,11 +287,22 @@ export default function ChatWindow({
   const [showSpecs, setShowSpecs] = useState(false);
   const [specsOnly, setSpecsOnly] = useState(false);
   const [introVideo, setIntroVideo] = useState<string | null>(null);
+  const [activeImage, setActiveImage] = useState<string | null>(null);
+  const [hoverPreview, setHoverPreview] = useState<{ src: string; x: number; y: number } | null>(
+    null,
+  );
+  const [imagePreview, setImagePreview] = useState<{ src: string; name?: string } | null>(null);
   const activeProduct = useMemo(
     () => (activeProductId ? productsData.find((item) => item.id === activeProductId) : null),
     [activeProductId],
   );
   const productIntroLink = activeProduct ? PRODUCT_INTRO_LINKS[activeProduct.id] : undefined;
+  const productGallery = useMemo(() => {
+    if (!activeProduct) return [];
+    if (activeProduct.gallery?.length) return activeProduct.gallery;
+    return activeProduct.image ? [activeProduct.image] : [];
+  }, [activeProduct]);
+  const previewSize = { width: 360, height: 240 };
   const phoneNumber = "+82 32-576-0277";
   const telLink = "tel:+82325760277";
   const socialLinks = [
@@ -330,8 +341,35 @@ export default function ChatWindow({
     if (!activeProductId) {
       setShowSpecs(false);
       setSpecsOnly(false);
+      setActiveImage(null);
+      setHoverPreview(null);
     }
   }, [activeProductId]);
+
+  useEffect(() => {
+    if (!activeProductId) return;
+    setActiveImage(productGallery[0] ?? null);
+  }, [activeProductId, productGallery]);
+
+  const getPreviewPosition = (clientX: number, clientY: number) => {
+    const margin = 16;
+    const offset = 18;
+    let x = clientX + offset;
+    let y = clientY + offset;
+    if (typeof window === "undefined") {
+      return { x, y };
+    }
+    const { innerWidth, innerHeight } = window;
+    if (x + previewSize.width + margin > innerWidth) {
+      x = clientX - previewSize.width - offset;
+    }
+    if (x < margin) x = margin;
+    if (y + previewSize.height + margin > innerHeight) {
+      y = innerHeight - previewSize.height - margin;
+    }
+    if (y < margin) y = margin;
+    return { x, y };
+  };
 
   const getYouTubeEmbedUrl = (url: string) => {
     const match =
@@ -365,6 +403,22 @@ export default function ChatWindow({
     };
     window.addEventListener("crystal-open-details", handleOpenDetails as EventListener);
     return () => window.removeEventListener("crystal-open-details", handleOpenDetails as EventListener);
+  }, []);
+
+  useEffect(() => {
+    const handleOpenImage = (event: Event) => {
+      const customEvent = event as CustomEvent<{ src?: string }>;
+      const src = customEvent.detail?.src;
+      if (!src) return;
+      const match = src.match(/\/images\/products\/([^/]+)\//);
+      const productId = match?.[1];
+      const productName = productId
+        ? productsData.find((item) => item.id === productId)?.name
+        : undefined;
+      setImagePreview({ src, name: productName });
+    };
+    window.addEventListener("crystal-open-image", handleOpenImage as EventListener);
+    return () => window.removeEventListener("crystal-open-image", handleOpenImage as EventListener);
   }, []);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -601,9 +655,61 @@ export default function ChatWindow({
       >
         {activeProduct && (
           <div className="space-y-4 text-sm text-slate-700">
-            {activeProduct.image && (
-              <div className="overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)]">
-                <img src={activeProduct.image} alt={activeProduct.name} className="h-48 w-full object-cover" />
+            {activeImage && (
+              <div className="space-y-3">
+                <div className="group overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)]">
+                  <img
+                    src={activeImage}
+                    alt={activeProduct.name}
+                    onMouseEnter={(event) => {
+                      const { x, y } = getPreviewPosition(event.clientX, event.clientY);
+                      setHoverPreview({ src: activeImage, x, y });
+                    }}
+                    onMouseMove={(event) => {
+                      setHoverPreview((prev) => {
+                        if (!prev) return prev;
+                        const { x, y } = getPreviewPosition(event.clientX, event.clientY);
+                        return { ...prev, x, y };
+                      });
+                    }}
+                    onMouseLeave={() => setHoverPreview(null)}
+                    className="h-48 w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+                  />
+                </div>
+                {productGallery.length > 1 && (
+                  <div className="grid grid-cols-6 gap-2">
+                    {productGallery.map((src) => {
+                      const isActive = src === activeImage;
+                      return (
+                        <button
+                          key={src}
+                          type="button"
+                          onClick={() => setActiveImage(src)}
+                          onMouseEnter={(event) => {
+                            const { x, y } = getPreviewPosition(event.clientX, event.clientY);
+                            setHoverPreview({ src, x, y });
+                          }}
+                          onMouseMove={(event) => {
+                            setHoverPreview((prev) => {
+                              if (!prev) return prev;
+                              const { x, y } = getPreviewPosition(event.clientX, event.clientY);
+                              return { ...prev, x, y };
+                            });
+                          }}
+                          onMouseLeave={() => setHoverPreview(null)}
+                          className={`overflow-hidden rounded-lg border transition ${
+                            isActive
+                              ? "border-crystalBlue shadow-[0_0_0_2px_rgba(26,60,110,0.2)]"
+                              : "border-slate-200 hover:border-crystalBlue/60"
+                          }`}
+                          aria-label={`View ${activeProduct.name} image`}
+                        >
+                          <img src={src} alt="" className="h-10 w-full object-cover" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             )}
             <p className="text-slate-700">{activeProduct.description}</p>
@@ -659,6 +765,16 @@ export default function ChatWindow({
             </div>
           </div>
         )}
+        {hoverPreview && (
+          <div
+            className="pointer-events-none fixed z-[80]"
+            style={{ left: hoverPreview.x, top: hoverPreview.y }}
+          >
+            <div className="w-[340px] max-w-[70vw] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:w-[380px]">
+              <img src={hoverPreview.src} alt="" className="h-auto w-full object-contain" />
+            </div>
+          </div>
+        )}
       </AppModal>
 
       <AppModal
@@ -686,6 +802,24 @@ export default function ChatWindow({
               </div>
             </div>
           )
+        )}
+      </AppModal>
+
+      <AppModal
+        open={Boolean(imagePreview)}
+        title={`Product Image${imagePreview?.name ? ` (${imagePreview.name})` : ""}`}
+        maxWidthClass="max-w-3xl"
+        panelClassName="max-w-3xl"
+        onClose={() => setImagePreview(null)}
+      >
+        {imagePreview && (
+          <div className="rounded-2xl border border-slate-200 bg-white p-3">
+            <img
+              src={imagePreview.src}
+              alt="Product preview"
+              className="max-h-[70vh] w-full object-contain"
+            />
+          </div>
         )}
       </AppModal>
     </div>

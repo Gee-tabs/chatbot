@@ -1,3 +1,6 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Mail } from "lucide-react";
@@ -12,6 +15,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   }
 
   const imageSrc = product.image || "/images/products/placeholder.jpg";
+  const gallery = useMemo(() => (product.gallery?.length ? product.gallery : [imageSrc]), [product, imageSrc]);
+  const [activeImage, setActiveImage] = useState(gallery[0] ?? imageSrc);
 
   return (
     <main className="min-h-screen bg-[color:var(--page-bg)]">
@@ -27,10 +32,49 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         </div>
 
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-sm">
-            <div className="relative h-[320px] w-full sm:h-[400px]">
-              <Image src={imageSrc} alt={product.name} fill className="object-cover" priority />
+          <div className="space-y-4">
+            <div className="mx-auto w-full max-w-[480px] overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-sm">
+              <div className="relative aspect-[4/3] w-full">
+                <Image
+                  src={activeImage}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 640px) 100vw, 60vw"
+                  className="object-contain"
+                  priority
+                />
+              </div>
             </div>
+            {gallery.length > 1 && (
+              <div className="mx-auto grid w-full max-w-[480px] grid-cols-3 gap-3 sm:grid-cols-6">
+                {gallery.map((src) => {
+                  const isActive = src === activeImage;
+                  return (
+                    <button
+                      key={src}
+                      type="button"
+                      onClick={() => setActiveImage(src)}
+                      className={`overflow-hidden rounded-2xl border bg-[color:var(--surface)] transition ${
+                        isActive
+                          ? "border-crystalBlue shadow-[0_0_0_2px_rgba(26,60,110,0.2)]"
+                          : "border-[color:var(--border)] hover:border-crystalBlue/60"
+                      }`}
+                      aria-label={`View ${product.name} image`}
+                    >
+                      <div className="relative aspect-[4/3] w-full">
+                        <Image
+                          src={src}
+                          alt=""
+                          fill
+                          sizes="(max-width: 640px) 30vw, 120px"
+                          className="object-contain"
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-6">

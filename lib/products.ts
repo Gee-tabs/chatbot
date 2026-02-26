@@ -1,3 +1,17 @@
+const buildGallery = (label: string) =>
+  Array.from({ length: 6 }, (_, index) =>
+    `https://placehold.co/900x700/1a3c6e/ffffff?text=${encodeURIComponent(`${label} ${index + 1}`)}`,
+  );
+
+const GALLERY_EXT_MAP: Record<string, string> = {
+  "cue-32": "png",
+  "tab-12": "JPG",
+};
+
+const buildLocalGallery = (id: string) => {
+  const ext = GALLERY_EXT_MAP[id] ?? "jpg";
+  return Array.from({ length: 6 }, (_, index) => `/images/products/${id}/${index + 1}.${ext}`);
+};
 const products = [
   {
     id: "tab-12",
@@ -6,6 +20,7 @@ const products = [
     size: "12 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_7832a7f213cf459d8403c7460a991e2e~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/T%2012_f.png",
+    gallery: buildLocalGallery("tab-12"),
     description:
       "Designed for effortless on-site use, this ultra-simple teleprompter supports an iPad or tablet and features a foldable design for easy transport. Its quick and intuitive setup makes it perfect for on-location filming.",
     features: [
@@ -47,6 +62,7 @@ const products = [
     size: "15.6 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_f6b3fc7a759942a780f6c70627fe7a45~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/f%2015.png",
+    gallery: buildLocalGallery("flex-15"),
     description:
       "A portable teleprompter designed for larger screen needs in the field. It works with laptops up to 15.6 inches, offering excellent cost efficiency. With its foldable, easy-to-assemble design, it’s ideal for both studio and on-site use.",
     features: [
@@ -86,8 +102,8 @@ const products = [
     name: "Clone 16",
     category: "Portable",
     size: "16 inch",
-    image:
-      "https://static.wixstatic.com/media/d0630a_7105d15163c240729eaa6cb65ac8b043~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/cl%2016.png",
+    image: "/images/products/clone-16/1.jpg",
+    gallery: buildLocalGallery("clone-16"),
     description:
       "A portable teleprompter that connects to a laptop via HDMI for faster, more stable production. Ideal for interviews and product shoots, it allows instant script editing and smooth control. Its 16:9 widescreen display offers a wider view, replacing traditional 17-inch 4:3 models.",
     features: [
@@ -133,6 +149,7 @@ const products = [
     size: "18 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_b258d0d5a45548ce9226fae4b6b2931a~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/s%2018.png",
+    gallery: buildLocalGallery("spot-18"),
     description:
       "The first 18-inch teleprompter built for both studio and field use, combining a large display with easy portability. Ideal for medium-sized teams, it features a 16:9 widescreen monitor with a switchable 4:3 mode for flexible script use.",
     features: [
@@ -178,6 +195,7 @@ const products = [
     size: "22 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_ac5218148a4e4920964186ca934a2c72~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/f%2022n.png",
+    gallery: buildLocalGallery("folder-22n"),
     description:
       "The first 22-inch high-brightness teleprompter for both studio and field use, combining a large display with portability. The Folder 22N offers high-end, cost-efficient performance with a 16:9 widescreen format and switchable 4:3 mode for flexible production.",
     features: [
@@ -224,6 +242,7 @@ const products = [
     size: "24 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_a36e5bf9e50449b294ec877e9525391c~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/c%2024.png",
+    gallery: buildLocalGallery("cue-24"),
     description:
       "An innovative teleprompter that delivers exceptional video quality for everyone — from professionals to beginners. Featuring a 24-inch, 1000 cd/m², 16:9 high-brightness monitor, it’s a powerful, mid-sized model built for both studio and on-location production.",
     features: [
@@ -269,6 +288,7 @@ const products = [
     size: "27 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_5255d1b2f860492ebef0d04aa98144bf~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/c%2027.png",
+    gallery: buildLocalGallery("cue-27"),
     description:
       "A high-performance teleprompter that delivers exceptional video quality for professionals and everyday creators. With its 27-inch, 1000 cd/m², 16:9 display, Cue 27 combines premium performance with outstanding portability for studio and field use.",
     features: [
@@ -314,6 +334,7 @@ const products = [
     size: "32 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_a8e1d26dcc52403dba18768e72585e21~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/c%2032%20%281%29.png",
+    gallery: buildLocalGallery("cue-32"),
     description:
       "A high-brightness, large-format teleprompter designed for professional broadcast producers, featuring a 32-inch, 1000 cd/m², 16:9 monitor — combining powerful performance with versatile functionality.",
     features: [
@@ -359,6 +380,7 @@ const products = [
     size: "24 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_19abe69304b446b3955f93307ffaa12b~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/Fr%2024.png",
+    gallery: buildLocalGallery("framer-24"),
     description:
       "A versatile teleprompter that lets professionals mount their own monitors. Framer 24 is a mid-sized DIY model with Crystal Prompter’s 4K flip converter, combining simplicity, performance, and affordability.",
     features: [
@@ -396,6 +418,7 @@ const products = [
     size: "27 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_a0ceea5d7ac3470a9bb77d115fd402ae~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/Fr%2027.png",
+    gallery: buildLocalGallery("framer-27"),
     description:
       "A revolutionary DIY teleprompter that lets anyone from professionals to creators mount their own monitor, featuring Crystal Prompter’s custom 4K flip converter for stable, high-quality performance.",
     features: [
@@ -432,6 +455,7 @@ const products = [
     size: "32 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_6b6a273d89914d5b937926477ea10668~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/Fr%2032.png",
+    gallery: buildLocalGallery("framer-32"),
     description:
       "Framer 32 is a large, versatile DIY teleprompter with Crystal Prompter’s custom 4K flip converter, allowing users to mount their own monitor for stable, high-quality performance.",
     features: [
@@ -468,6 +492,7 @@ const products = [
     size: "24 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_d5be528d1132491087e519a40ba74325~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/M%2024.png",
+    gallery: buildGallery("Mime 24"),
     description:
       "A PGM monitor beneath the Crystal Prompter gives presenters a real-time view of the broadcast, with flip-screen technology that mirrors their movements and an adjustable bracket for clear visibility in any lighting.",
     features: [
@@ -503,6 +528,7 @@ const products = [
     size: "27 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_f34e2bde7539409a9a227c9531eb1be1~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/M%2027.png",
+    gallery: buildGallery("Mime 27"),
     description:
       "A PGM monitor beneath the Crystal Prompter gives presenters a real-time view of the broadcast, with flip-screen technology that mirrors their movements and an adjustable bracket for clear visibility in any lighting.",
     features: [
@@ -538,6 +564,7 @@ const products = [
     size: "32 inch",
     image:
       "https://static.wixstatic.com/media/d0630a_cef2e6e781bf4592ac53228f84a31585~mv2.png/v1/fill/w_500%2Ch_500%2Cal_c%2Cq_85%2Cenc_avif%2Cquality_auto/M%2032.png",
+    gallery: buildGallery("Mime 32"),
     description:
       "A 4K PGM monitor beneath the Crystal Prompter lets presenters view the live broadcast in real time. Flip-screen technology matches their movements, and an adjustable bracket ensures clear visibility in any studio lighting.",
     features: [

@@ -10,6 +10,7 @@ export type ChatMessage = {
     label: string;
     href: string;
   };
+  images?: string[];
   media?: ChatMedia;
   contacts?: ChatContact;
 };
@@ -78,6 +79,32 @@ export default function ChatMessage({ message }: ChatMessageProps) {
           >
             {message.link.label}
           </a>
+        )}
+        {message.images && message.images.length > 0 && (
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {message.images.map((src, index) => (
+              <button
+                key={`${src}-${index}`}
+                type="button"
+                onClick={() => {
+                  window.dispatchEvent(
+                    new CustomEvent("crystal-open-image", {
+                      detail: { src },
+                    }),
+                  );
+                }}
+                className="group overflow-hidden rounded-lg border border-slate-200 bg-slate-50 transition hover:border-crystalBlue/60 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crystalBlue/30"
+                aria-label={`Open product image ${index + 1}`}
+              >
+                <img
+                  src={src}
+                  alt={`Product image ${index + 1}`}
+                  className="h-20 w-full object-contain transition-transform duration-200 group-hover:scale-[1.03]"
+                  loading="lazy"
+                />
+              </button>
+            ))}
+          </div>
         )}
         {message.media && (
           <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-3 text-slate-700 shadow-sm">
