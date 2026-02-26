@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --page-bg: #0a0a0a;
+  --page-grad-from: #0d1117;
+  --page-grad-via: #0f172a;
+  --page-grad-to: #1a1a2e;
+  --surface: #111827;
+  --surface-muted: #1a1a2e;
+  --surface-soft: #16213e;
+  --border: rgba(255, 255, 255, 0.1);
+  --text-primary: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --text-subtle: rgba(255, 255, 255, 0.6);
+  --nav-bg: rgba(10, 10, 10, 0.8);
+  --nav-border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-hover-bg: rgba(255, 255, 255, 0.16);
+  --glass-hover-border: rgba(255, 255, 255, 0.4);
+  --logo-primary: #ffffff;
+  --logo-accent: #3b82f6;
+  --logo-frame: rgba(59, 130, 246, 0.6);
+  --grid-line: rgba(255, 255, 255, 0.05);
+  --scanline: rgba(255, 255, 255, 0.02);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --page-bg: #f8fafc;
+  --page-grad-from: #f8fafc;
+  --page-grad-via: #eef2f7;
+  --page-grad-to: #e2e8f0;
+  --surface: #ffffff;
+  --surface-muted: #f1f5f9;
+  --surface-soft: #e8edf5;
+  --border: rgba(15, 23, 42, 0.12);
+  --text-primary: #0f172a;
+  --text-muted: rgba(15, 23, 42, 0.7);
+  --text-subtle: rgba(15, 23, 42, 0.6);
+  --nav-bg: rgba(248, 250, 252, 0.85);
+  --nav-border: rgba(15, 23, 42, 0.12);
+  --glass-bg: rgba(15, 23, 42, 0.06);
+  --glass-border: rgba(15, 23, 42, 0.12);
+  --glass-hover-bg: rgba(255, 255, 255, 0.7);
+  --glass-hover-border: rgba(15, 23, 42, 0.2);
+  --logo-primary: #0f172a;
+  --logo-accent: #2563eb;
+  --logo-frame: rgba(37, 99, 235, 0.45);
+  --grid-line: rgba(15, 23, 42, 0.06);
+  --scanline: rgba(15, 23, 42, 0.03);
+}
+
+body {
+  @apply bg-[color:var(--page-bg)] text-[color:var(--text-primary)] antialiased;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #b9c3d5 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #b9c3d5;
+  border-radius: 999px;
+}
+
+.prompter-frame {
+  position: relative;
+}
+
+.prompter-image {
+  width: 100%;
+  height: auto;
+  max-width: 680px;
+  display: block;
+  position: relative;
+  z-index: 1;
+  object-fit: contain;
+}
+
+
+.prompter-glass {
+  position: absolute;
+  z-index: 3;
+  overflow: visible;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.prompter-mask {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+}
+
+.prompter-text-inner {
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.prompter-text {
+  padding: 8px 12px 10px 28px;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: rgba(248, 250, 252, 0.96);
+  text-align: center;
+  text-shadow: 0 0 12px rgba(59, 130, 246, 0.35);
+  animation: prompterScroll 38s linear infinite;
+  will-change: transform;
+}
+
+
+@keyframes prompterScroll {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.prompter-bar {
+  position: absolute;
+  top: -24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  color: rgba(226, 232, 240, 0.9);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+
+.prompter-toggle-left {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 11px solid #facc15;
+  filter: none;
+}
+
+.prompter-bar-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 6px;
+  background: rgba(59, 130, 246, 0.12);
+  color: rgba(148, 197, 255, 0.9);
+  font-size: 10px;
+}
+
+.prompter-bar-title {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  color: rgba(226, 232, 240, 0.95);
+  font-size: 8px;
+  margin-right: 6px;
+}
+
+.prompter-bar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.prompter-pill {
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 7px;
+  letter-spacing: 0.12em;
+}
+
+.prompter-pill-muted {
+  background: #d1d5db;
+  color: #111827;
+}
+
+.prompter-pill-active {
+  background: #d90000;
+  color: #fff1f1;
+}
+
+.prompter-settings {
+  width: 16px;
+  height: 16px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.chat-fab-wrapper {
+  animation: chatFloat 4s ease-in-out infinite;
+}
+
+.chat-fab {
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.55), 0 0 40px rgba(59, 130, 246, 0.25);
+}
+
+@keyframes chatFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
