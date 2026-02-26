@@ -84,7 +84,7 @@ function OptionList({ options, onSelect }: OptionListProps) {
               hasIcon ? "gap-2 text-left" : ""
             } ${isSpecsList ? "justify-center text-center" : "text-left"} `}
           >
-            {hasIcon && (
+            {hasIcon && Icon && styles && (
               <span
                 className={`flex h-7 w-7 items-center justify-center rounded-full ${styles.bg} ${styles.icon}`}
               >
