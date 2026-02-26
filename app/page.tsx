@@ -142,13 +142,13 @@ export default function HomePage() {
     <main className="bg-[color:var(--page-bg)] text-[color:var(--text-primary)]">
       {announcementVisible && (
         <div className="border-b border-black/10 bg-[#fff3a6] text-slate-900">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3 text-sm font-semibold">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2 text-[11px] font-semibold sm:px-6 sm:py-3 sm:text-sm">
             <button
               type="button"
               onClick={() => setSwOpen(true)}
               className="inline-flex items-center gap-2 text-left underline decoration-slate-900/30 underline-offset-4 transition hover:opacity-80"
             >
-              <Rocket className="h-4 w-4" strokeWidth={2} />
+              <Rocket className="h-3 w-3 sm:h-4 sm:w-4" strokeWidth={2} />
               Now Live: Crystal Prompter WebApp Beta 1.0 — Seamless Teleprompting Anywhere, Even Offline.
             </button>
             <button

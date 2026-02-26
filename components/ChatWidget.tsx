@@ -488,7 +488,7 @@ export default function ChatWidget() {
           aria-controls="crystal-chat-window"
         >
           {!open && (
-            <span className="pointer-events-none absolute bottom-full mb-3 whitespace-nowrap rounded-full bg-[#1a3c6e] px-4 py-1.5 text-[12px] font-semibold text-white shadow-[0_8px_20px_rgba(15,23,42,0.35)]">
+            <span className="pointer-events-none absolute bottom-full mb-3 hidden whitespace-nowrap rounded-full bg-[#1a3c6e] px-4 py-1.5 text-[12px] font-semibold text-white shadow-[0_8px_20px_rgba(15,23,42,0.35)] sm:inline-flex">
               Chat with us!
               <span className="absolute -bottom-1 right-6 h-2 w-2 rotate-45 bg-[#1a3c6e]" />
             </span>
