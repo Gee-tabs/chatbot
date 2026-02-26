@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties, FormEvent } from "react";
+import type { CSSProperties, FormEvent, MouseEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ChatMessage, { ChatMessage as ChatMessageType, ChatMessageOption, ChatProductCard } from "./ChatMessage";
 import TypingIndicator from "./TypingIndicator";
@@ -292,6 +292,15 @@ export default function ChatWindow({
     null,
   );
   const [imagePreview, setImagePreview] = useState<{ src: string; name?: string } | null>(null);
+  const [lensState, setLensState] = useState<{ left: number; top: number; bgX: number; bgY: number } | null>(
+    null,
+  );
+  const [modalLensState, setModalLensState] = useState<{
+    left: number;
+    top: number;
+    bgX: number;
+    bgY: number;
+  } | null>(null);
   const activeProduct = useMemo(
     () => (activeProductId ? productsData.find((item) => item.id === activeProductId) : null),
     [activeProductId],
@@ -303,6 +312,10 @@ export default function ChatWindow({
     return activeProduct.image ? [activeProduct.image] : [];
   }, [activeProduct]);
   const previewSize = { width: 360, height: 240 };
+  const lensSize = 180;
+  const lensZoom = 2.6;
+  const modalLensSize = 200;
+  const modalLensZoom = 2.8;
   const phoneNumber = "+82 32-576-0277";
   const telLink = "tel:+82325760277";
   const socialLinks = [
@@ -351,6 +364,14 @@ export default function ChatWindow({
     setActiveImage(productGallery[0] ?? null);
   }, [activeProductId, productGallery]);
 
+  useEffect(() => {
+    setLensState(null);
+  }, [activeImage]);
+
+  useEffect(() => {
+    setModalLensState(null);
+  }, [imagePreview]);
+
   const getPreviewPosition = (clientX: number, clientY: number) => {
     const margin = 16;
     const offset = 18;
@@ -369,6 +390,32 @@ export default function ChatWindow({
     }
     if (y < margin) y = margin;
     return { x, y };
+  };
+
+  const updateLens = (event: MouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const clampedX = Math.max(0, Math.min(x, rect.width));
+    const clampedY = Math.max(0, Math.min(y, rect.height));
+    const left = Math.max(0, Math.min(clampedX - lensSize / 2, rect.width - lensSize));
+    const top = Math.max(0, Math.min(clampedY - lensSize / 2, rect.height - lensSize));
+    const bgX = (clampedX / rect.width) * 100;
+    const bgY = (clampedY / rect.height) * 100;
+    setLensState({ left, top, bgX, bgY });
+  };
+
+  const updateModalLens = (event: MouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const clampedX = Math.max(0, Math.min(x, rect.width));
+    const clampedY = Math.max(0, Math.min(y, rect.height));
+    const left = Math.max(0, Math.min(clampedX - modalLensSize / 2, rect.width - modalLensSize));
+    const top = Math.max(0, Math.min(clampedY - modalLensSize / 2, rect.height - modalLensSize));
+    const bgX = (clampedX / rect.width) * 100;
+    const bgY = (clampedY / rect.height) * 100;
+    setModalLensState({ left, top, bgX, bgY });
   };
 
   const getYouTubeEmbedUrl = (url: string) => {
@@ -657,24 +704,32 @@ export default function ChatWindow({
           <div className="space-y-4 text-sm text-slate-700">
             {activeImage && (
               <div className="space-y-3">
-                <div className="group overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)]">
+                <div
+                  className="relative overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)]"
+                  onMouseEnter={updateLens}
+                  onMouseMove={updateLens}
+                  onMouseLeave={() => setLensState(null)}
+                >
                   <img
                     src={activeImage}
                     alt={activeProduct.name}
-                    onMouseEnter={(event) => {
-                      const { x, y } = getPreviewPosition(event.clientX, event.clientY);
-                      setHoverPreview({ src: activeImage, x, y });
-                    }}
-                    onMouseMove={(event) => {
-                      setHoverPreview((prev) => {
-                        if (!prev) return prev;
-                        const { x, y } = getPreviewPosition(event.clientX, event.clientY);
-                        return { ...prev, x, y };
-                      });
-                    }}
-                    onMouseLeave={() => setHoverPreview(null)}
-                    className="h-48 w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+                    className="h-48 w-full object-cover"
                   />
+                  {lensState && (
+                    <div
+                      className="pointer-events-none absolute rounded-full border border-white/80 shadow-[0_12px_30px_rgba(15,23,42,0.35)]"
+                      style={{
+                        width: `${lensSize}px`,
+                        height: `${lensSize}px`,
+                        left: `${lensState.left}px`,
+                        top: `${lensState.top}px`,
+                        backgroundImage: `url(${activeImage})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: `${lensZoom * 100}%`,
+                        backgroundPosition: `${lensState.bgX}% ${lensState.bgY}%`,
+                      }}
+                    />
+                  )}
                 </div>
                 {productGallery.length > 1 && (
                   <div className="grid grid-cols-6 gap-2">
@@ -814,11 +869,33 @@ export default function ChatWindow({
       >
         {imagePreview && (
           <div className="rounded-2xl border border-slate-200 bg-white p-3">
-            <img
-              src={imagePreview.src}
-              alt="Product preview"
-              className="max-h-[70vh] w-full object-contain"
-            />
+            <div
+              className="relative overflow-hidden rounded-xl"
+              onMouseEnter={updateModalLens}
+              onMouseMove={updateModalLens}
+              onMouseLeave={() => setModalLensState(null)}
+            >
+              <img
+                src={imagePreview.src}
+                alt="Product preview"
+                className="max-h-[70vh] w-full object-contain"
+              />
+              {modalLensState && (
+                <div
+                  className="pointer-events-none absolute rounded-full border border-white/80 shadow-[0_12px_30px_rgba(15,23,42,0.35)]"
+                  style={{
+                    width: `${modalLensSize}px`,
+                    height: `${modalLensSize}px`,
+                    left: `${modalLensState.left}px`,
+                    top: `${modalLensState.top}px`,
+                    backgroundImage: `url(${imagePreview.src})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: `${modalLensZoom * 100}%`,
+                    backgroundPosition: `${modalLensState.bgX}% ${modalLensState.bgY}%`,
+                  }}
+                />
+              )}
+            </div>
           </div>
         )}
       </AppModal>
