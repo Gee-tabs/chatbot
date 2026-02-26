@@ -69,8 +69,11 @@ type OptionListProps = {
 
 function OptionList({ options, onSelect }: OptionListProps) {
   const isSpecsList = options.every((option) => option.value?.includes("spec"));
+  const isImagesList = options.every((option) => option.value?.includes("images"));
   return (
-    <div className={`mt-2 grid gap-2 ${isSpecsList ? "grid-cols-3" : "grid-cols-1"}`}>
+    <div
+      className={`mt-2 grid gap-2 ${isSpecsList || isImagesList ? "grid-cols-3" : "grid-cols-1"}`}
+    >
       {options.map((option) => {
         const Icon = OPTION_ICON_MAP[option.id];
         const styles = OPTION_ICON_STYLES[option.id];
