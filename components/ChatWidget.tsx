@@ -276,6 +276,26 @@ const isSoftwareQuery = (input: string) => {
   );
 };
 
+const buildProductImageMessage = (product: (typeof products)[number]): ChatMessageType => {
+  const introLink = PRODUCT_INTRO_LINKS[product.id];
+  const introEmbed = introLink ? getYouTubeEmbedUrl(introLink) : null;
+  return createMessage(
+    "bot",
+    `Product Details\n• Product: ${product.name}\n• Showing images below`,
+    undefined,
+    undefined,
+    undefined,
+    introEmbed
+      ? {
+          title: "Product Introduction",
+          videos: [{ title: `${product.name} Intro`, embedUrl: introEmbed }],
+        }
+      : undefined,
+    undefined,
+    product.gallery ?? [],
+  );
+};
+
 const isImageQuery = (input: string) => {
   const normalized = input.trim().toLowerCase();
   return (
@@ -295,6 +315,7 @@ const getMockResponse = (input: string): ChatMessageType[] => {
   const normalized = input.trim().toLowerCase();
   const isSoftwareRequest = isSoftwareQuery(normalized);
   const wantsImages = isImageQuery(normalized);
+  const mentionedProduct = findProductMention(normalized);
 
   if (isSoftwareRequest) {
     return [
@@ -309,22 +330,11 @@ const getMockResponse = (input: string): ChatMessageType[] => {
     ];
   }
 
+  if (mentionedProduct && !normalized.includes("spec")) {
+    return [buildProductImageMessage(mentionedProduct)];
+  }
+
   if (wantsImages) {
-    const product = findProductMention(normalized);
-    if (product) {
-      return [
-        createMessage(
-          "bot",
-          `Here are the ${product.name} images:`,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          product.gallery ?? [],
-        ),
-      ];
-    }
     return [
       createMessage(
         "bot",
@@ -365,30 +375,6 @@ const getMockResponse = (input: string): ChatMessageType[] => {
         "bot",
         "Which product specs do you need?",
         buildSpecOptions(),
-      ),
-    ];
-  }
-
-  const mentionedProduct = findProductMention(normalized);
-  if (mentionedProduct) {
-    const introLink = PRODUCT_INTRO_LINKS[mentionedProduct.id];
-    const introEmbed = introLink ? getYouTubeEmbedUrl(introLink) : null;
-    return [
-      createMessage(
-        "bot",
-        `Product Details\n• Product: ${mentionedProduct.name}\n• Action: Opening full details now`,
-        undefined,
-        undefined,
-        undefined,
-        introEmbed
-          ? {
-              title: "Product Introduction",
-              videos: [{ title: `${mentionedProduct.name} Intro`, embedUrl: introEmbed }],
-            }
-          : {
-              title: "Product Introduction",
-              description: "Intro video will be available soon.",
-            },
       ),
     ];
   }
@@ -491,7 +477,7 @@ const handleSend = (text: string) => {
       }, 350);
     }
 
-    if (mentionedProduct && !specProduct && !wantsImages) {
+    if (mentionedProduct && !specProduct) {
       setTimeout(() => {
         window.dispatchEvent(
           new CustomEvent("crystal-open-details", {
