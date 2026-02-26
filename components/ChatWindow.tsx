@@ -46,7 +46,7 @@ function CrystalLogo() {
   );
 }
 
-const OPTION_ICON_MAP: Record<string, typeof Video> = {
+const OPTION_ICON_MAP: Partial<Record<string, typeof Video>> = {
   youtube: Video,
   broadcast: Clapperboard,
   teaching: GraduationCap,
@@ -54,10 +54,7 @@ const OPTION_ICON_MAP: Record<string, typeof Video> = {
   events: Users,
 };
 
-const OPTION_ICON_STYLES: Record<
-  string,
-  { icon: string; bg: string }
-> = {
+const OPTION_ICON_STYLES: Partial<Record<string, { icon: string; bg: string }>> = {
   youtube: { icon: "text-red-600", bg: "bg-red-100" },
   broadcast: { icon: "text-indigo-600", bg: "bg-indigo-100" },
   teaching: { icon: "text-emerald-600", bg: "bg-emerald-100" },
