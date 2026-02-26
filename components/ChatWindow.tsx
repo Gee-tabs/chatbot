@@ -386,7 +386,7 @@ export default function ChatWindow({
       id="crystal-chat-window"
       role="dialog"
       aria-modal="false"
-      className={`fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] origin-bottom-right rounded-2xl border border-slate-200 bg-slate-100/95 shadow-floating backdrop-blur transition-all duration-200 sm:bottom-24 sm:right-6 ${
+      className={`fixed bottom-24 right-4 z-50 w-[92vw] max-w-[calc(100vw-2rem)] origin-bottom-right rounded-2xl border border-slate-200 bg-slate-100/95 shadow-floating backdrop-blur transition-all duration-200 sm:bottom-24 sm:right-6 sm:w-[380px] ${
         open
           ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
           : "pointer-events-none translate-y-4 scale-95 opacity-0"
@@ -426,7 +426,7 @@ export default function ChatWindow({
         </div>
       </div>
 
-      <div className="flex h-[500px] max-h-[calc(100vh-10rem)] flex-col">
+      <div className="flex h-[70vh] max-h-[calc(100vh-10rem)] flex-col sm:h-[500px]">
         <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
           {messages.map((message) => (
             <div key={message.id}>

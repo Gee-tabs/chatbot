@@ -172,39 +172,39 @@ export default function HomePage() {
         <div className="absolute inset-0 opacity-20 [background:linear-gradient(to_right,var(--grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-line)_1px,transparent_1px)] [background-size:120px_120px]" />
         <div className="pointer-events-none absolute inset-0 opacity-30 [background:repeating-linear-gradient(180deg,var(--scanline),var(--scanline)_1px,transparent_1px,transparent_5px)]" />
 
-        <div className="relative mx-auto flex min-h-[90vh] max-w-6xl flex-col items-center gap-8 px-6 pt-12 pb-12 lg:flex-row lg:items-center lg:pt-12 lg:pb-12">
+        <div className="relative mx-auto flex min-h-[90vh] max-w-6xl flex-col items-center gap-8 px-4 pt-8 pb-10 sm:px-6 sm:pt-12 sm:pb-12 lg:flex-row lg:items-center">
           <div className="flex w-full flex-col items-start gap-6 text-left lg:w-[55%]">
             <div className="space-y-4">
-              <h1 className="text-7xl font-semibold leading-tight tracking-tight text-[color:var(--text-primary)] sm:text-8xl lg:text-[96px]">
+              <h1 className="text-5xl font-semibold leading-tight tracking-tight text-[color:var(--text-primary)] sm:text-7xl lg:text-[96px]">
                 Professional
                 <span className="block text-blue-400">Prompters</span>
               </h1>
               <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[color:var(--text-subtle)]">
                 Made in Korea
               </p>
-              <p className="max-w-xl text-base font-light text-[color:var(--text-muted)] sm:text-lg">
+              <p className="max-w-xl text-sm font-light text-[color:var(--text-muted)] sm:text-lg">
                 Trusted by broadcasters, educators, politicians, and content creators across South Korea and the world.
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="flex flex-wrap items-center gap-3 pt-2 sm:gap-4">
               <button
                 type="button"
                 onClick={handleScrollToSeries}
-                className="inline-flex items-center gap-2 rounded-full border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] px-6 py-3 text-sm font-semibold text-[color:var(--text-primary)] backdrop-blur transition hover:border-[color:var(--glass-hover-border)] hover:bg-[color:var(--glass-hover-bg)]"
+                className="inline-flex items-center gap-2 rounded-full border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] px-4 py-2 text-xs font-semibold text-[color:var(--text-primary)] backdrop-blur transition hover:border-[color:var(--glass-hover-border)] hover:bg-[color:var(--glass-hover-bg)] sm:px-6 sm:py-3 sm:text-sm"
               >
                 View Products
                 <ArrowRight className="h-4 w-4" strokeWidth={2} />
               </button>
               <a
                 href="mailto:sales@crystalprompter.co.kr?subject=Rental%20Inquiry"
-                className="inline-flex items-center gap-2 rounded-full border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] px-6 py-3 text-sm font-semibold text-[color:var(--text-primary)] backdrop-blur transition hover:border-[color:var(--glass-hover-border)] hover:bg-[color:var(--glass-hover-bg)]"
+                className="inline-flex items-center gap-2 rounded-full border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] px-4 py-2 text-xs font-semibold text-[color:var(--text-primary)] backdrop-blur transition hover:border-[color:var(--glass-hover-border)] hover:bg-[color:var(--glass-hover-bg)] sm:px-6 sm:py-3 sm:text-sm"
               >
                 Rental Inquiry
               </a>
               <button
                 type="button"
                 onClick={() => setSwOpen(true)}
-                className="inline-flex items-center gap-2 rounded-full border border-emerald-300/60 bg-gradient-to-r from-emerald-400 to-green-400 px-9 py-4 text-lg font-semibold text-emerald-950 shadow-[0_18px_40px_rgba(34,197,94,0.35)] transition hover:from-emerald-300 hover:to-green-300 hover:shadow-[0_22px_50px_rgba(34,197,94,0.5)]"
+                className="inline-flex items-center gap-2 rounded-full border border-emerald-300/60 bg-gradient-to-r from-emerald-400 to-green-400 px-6 py-3 text-base font-semibold text-emerald-950 shadow-[0_18px_40px_rgba(34,197,94,0.35)] transition hover:from-emerald-300 hover:to-green-300 hover:shadow-[0_22px_50px_rgba(34,197,94,0.5)] sm:px-9 sm:py-4 sm:text-lg"
               >
                 <Sparkles className="h-5 w-5 text-emerald-950" strokeWidth={2} />
                 Crystal Prompter SW
@@ -216,9 +216,9 @@ export default function HomePage() {
           </div>
 
           <div className="relative flex w-full items-center justify-center lg:w-[45%]">
-            <div className="absolute h-[620px] w-[620px] rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.35),transparent)] blur-3xl" />
-            <div className="prompter-frame relative w-full max-w-[720px] min-h-[420px] overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)]/60 p-7 shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
-              <div className="relative flex min-h-[360px] items-center justify-center">
+            <div className="absolute h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.35),transparent)] blur-3xl sm:h-[620px] sm:w-[620px]" />
+            <div className="prompter-frame relative w-full max-w-[560px] min-h-[320px] overflow-hidden rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface)]/60 p-5 shadow-[0_24px_60px_rgba(0,0,0,0.45)] sm:max-w-[720px] sm:min-h-[420px] sm:p-7">
+              <div className="relative flex min-h-[260px] items-center justify-center sm:min-h-[360px]">
                 <img src={heroTeleprompter.image} alt={heroTeleprompter.name} loading="lazy" className="prompter-image" />
                 <div
                   className="prompter-glass"
